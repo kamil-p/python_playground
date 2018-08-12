@@ -2,7 +2,7 @@ from django.db import models
 
 
 class HistoryByMinute(models.Model):
-    time = models.IntegerField()
+    time = models.IntegerField(unique=True)
     high = models.IntegerField()
     low = models.IntegerField()
     open = models.IntegerField()
