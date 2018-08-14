@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import time
 
 import requests
@@ -8,6 +9,8 @@ from django.db.utils import IntegrityError
 from django.forms import forms
 
 from .models import HistoryByMinute
+
+logger = logging.getLogger('django')
 
 
 class HistoryByMinuteForm(forms.Form):
@@ -31,7 +34,7 @@ class HistoryByMinuteForm(forms.Form):
             response = requests.get("https://min-api.cryptocompare.com/data/histominute", params)
             i += 1
             result = json.loads(response.text)
-            print("While count = " + i.__str__() + " response len = " + len(result['Data']).__str__())
+            logger.info("While count = " + i.__str__() + " response len = " + len(result['Data']).__str__())
 
             for one_history in result['Data']:
                 ts = one_history['time']
@@ -42,6 +45,6 @@ class HistoryByMinuteForm(forms.Form):
                     histo.save()
                 except IntegrityError:
                     error_count += 1
-                    print(error_count)
+                    logger.info("Error count " + error_count.__str__())
 
         return None
