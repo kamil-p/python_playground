@@ -25,26 +25,37 @@ class HistoryByMinuteForm(forms.Form):
 
         ts_now = int(time.time())
 
-        i = 0
+        all_count = 0
         error_count = 0
+        total_calls = 0
+
         while (ts is None) or (ts_now > ts):
             ts += 5000
             params = {'fsym': 'ETH', 'tsym': 'PLN', 'limit': 100, 'toTs': ts}
 
             response = requests.get("https://min-api.cryptocompare.com/data/histominute", params)
-            i += 1
+            total_calls += 1
             result = json.loads(response.text)
-            logger.info("While count = " + i.__str__() + " response len = " + len(result['Data']).__str__())
+
+            logger.info("Total calls {}, row count {}, "
+                        "successfully saved {}, error count {}".format(
+                total_calls, all_count,
+                all_count - error_count, error_count))
 
             for one_history in result['Data']:
+                all_count += 1
                 ts = one_history['time']
                 one_history['crypto'] = 'ETH'
                 one_history['curr'] = 'PLN'
                 try:
-                    histo = HistoryByMinute.objects.create(**one_history)
-                    histo.save()
+                    history = HistoryByMinute.objects.create(**one_history)
+                    history.save()
                 except IntegrityError:
                     error_count += 1
-                    logger.info("Error count " + error_count.__str__())
+
+        logger.info("Total calls {}, row count {}, "
+                    "successfully saved {}, error count {}".format(
+            total_calls, all_count,
+            all_count - error_count, error_count))
 
         return None
