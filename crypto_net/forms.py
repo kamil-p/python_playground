@@ -21,7 +21,7 @@ class HistoryByMinuteForm(forms.Form):
             ts = last_history.time
         except HistoryByMinute.DoesNotExist:
             ts = int((datetime.datetime.now() - relativedelta(weeks=1)).timestamp())
-            ts -= 5000
+            ts -= 6000
 
         ts_now = int(time.time())
 
@@ -30,7 +30,7 @@ class HistoryByMinuteForm(forms.Form):
         total_calls = 0
 
         while (ts is None) or (ts_now > ts):
-            ts += 5000
+            ts += 6000
             params = {'fsym': 'ETH', 'tsym': 'PLN', 'limit': 100, 'toTs': ts}
 
             response = requests.get("https://min-api.cryptocompare.com/data/histominute", params)
@@ -44,7 +44,11 @@ class HistoryByMinuteForm(forms.Form):
 
             for one_history in result['Data']:
                 all_count += 1
-                ts = one_history['time']
+                if ts < one_history['time']:
+                    ts = one_history['time']
+                else:
+                    continue
+
                 one_history['crypto'] = 'ETH'
                 one_history['curr'] = 'PLN'
                 try:
