@@ -1,10 +1,8 @@
-import datetime
 import json
 import logging
 import time
 
 import requests
-from dateutil.relativedelta import *
 from django.db.utils import IntegrityError
 from django.forms import forms
 
@@ -22,8 +20,7 @@ class HistoryByMinuteForm(forms.Form):
         except HistoryByMinute.DoesNotExist:
             ts = int(time.time())
 
-        weak_before_now = int((datetime.datetime.now() - relativedelta(weeks=1)).timestamp())
-
+        weak_before_now = int(time.time()) - 518400
         all_count = 0
         error_count = 0
         total_calls = 0
