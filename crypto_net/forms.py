@@ -14,40 +14,33 @@ logger = logging.getLogger('django')
 class HistoryByMinuteForm(forms.Form):
     @staticmethod
     def sync_history():
-        try:
-            last_history = HistoryByMinute.objects.latest('-time')
-            ts = last_history.time
-        except HistoryByMinute.DoesNotExist:
-            ts = int(time.time())
-
-        weak_before_now = int(time.time()) - 518400
+        ts = HistoryByMinuteForm.__get_start_ts()
+        now = int(time.time())
         all_count = 0
         error_count = 0
         total_calls = 0
 
-        while (ts is None) or (weak_before_now <= ts):
+        while (ts is None) or (now >= ts):
             params = {'fsym': 'ETH', 'tsym': 'PLN', 'limit': 100, 'toTs': ts}
 
-            response = requests.get("https://min-api.cryptocompare.com/data/histominute", params)
             total_calls += 1
+            # TODO fix redundant call after retry of complete sync
+            response = requests.get("https://min-api.cryptocompare.com/data/histominute", params)
             result = json.loads(response.text)
 
-            logger.info("Total calls {}, row count {}, "
-                        "successfully saved {}, error count {}".format(
-                total_calls, all_count,
-                all_count - error_count, error_count))
+            logger.info("Total calls {}, row count {}, successfully saved {}, error count {}"
+                        .format(total_calls, all_count, all_count - error_count, error_count))
 
-            if not result['Data']:
-                break
+            if 'TimeTo' in result:
+                ts = result['TimeTo'] + 6060
             else:
-                ts = min(result['Data'], key=lambda row: row['time'])['time'] - 1
+                break
 
             for one_history in result['Data']:
                 all_count += 1
 
-                ts = one_history['time']
-                one_history['crypto'] = 'ETH'
-                one_history['curr'] = 'PLN'
+                one_history['crypto'] = params['fsym']
+                one_history['curr'] = params['tsym']
 
                 try:
                     history = HistoryByMinute.objects.create(**one_history)
@@ -55,9 +48,15 @@ class HistoryByMinuteForm(forms.Form):
                 except IntegrityError:
                     error_count += 1
 
-        logger.info("Total calls {}, row count {}, "
-                    "successfully saved {}, error count {}".format(
-            total_calls, all_count,
-            all_count - error_count, error_count))
+        logger.info("Total calls {}, row count {}, successfully saved {}, error count {}"
+                    .format(total_calls, all_count, all_count - error_count, error_count))
 
         return None
+
+    @staticmethod
+    def __get_start_ts():
+        try:
+            last_history = HistoryByMinute.objects.latest('time')
+            return last_history.time
+        except HistoryByMinute.DoesNotExist:
+            return int(time.time()) - 578400
