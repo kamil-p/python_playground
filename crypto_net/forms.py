@@ -60,3 +60,8 @@ class HistoryByMinuteForm(forms.Form):
             return last_history.time
         except HistoryByMinute.DoesNotExist:
             return int(time.time()) - 578400
+
+    @staticmethod
+    def get_data(*fields):
+        result = {'time': HistoryByMinute.objects.values_list('time', flat=True), 'high': HistoryByMinute.objects.values_list('high')}
+        return result
