@@ -1,4 +1,7 @@
-from django.http import HttpResponseRedirect
+import io
+
+import matplotlib.pyplot as plt
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 
@@ -15,5 +18,13 @@ def sync_history(request):
 
 
 def get_history_plot(request):
-    HistoryByMinuteForm.get_data('time', 'high')
-    return HttpResponseRedirect(reverse('crypto_net:index'))
+    history = HistoryByMinuteForm.get_history_plot()
+
+    fig = plt.figure(1, figsize=(9, 4))
+    plt.subplot(111)
+    plt.plot(history['time'], history['high'])
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close(fig)
+    response = HttpResponse(buf.getvalue(), content_type='image/png')
+    return response

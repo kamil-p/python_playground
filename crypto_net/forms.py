@@ -11,6 +11,8 @@ from .models import HistoryByMinute
 logger = logging.getLogger('django')
 
 
+
+
 class HistoryByMinuteForm(forms.Form):
     @staticmethod
     def sync_history():
@@ -62,6 +64,7 @@ class HistoryByMinuteForm(forms.Form):
             return int(time.time()) - 578400
 
     @staticmethod
-    def get_data(*fields):
-        result = {'time': HistoryByMinute.objects.values_list('time', flat=True), 'high': HistoryByMinute.objects.values_list('high')}
-        return result
+    def get_history_plot():
+        history = HistoryByMinute.objects.order_by('time').all()
+        return {'time': history.values_list('time'),
+                'high': history.values_list('high')}
