@@ -21,14 +21,20 @@ def sync_history(request):
 def get_history_plot(request):
     history = HistoryByMinuteForm.get_history_plot()
 
-    def to_date(x):
-        return datetime.utcfromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S')
+    def to_string_date(x):
+        return datetime.utcfromtimestamp(x)
 
-    high = map(to_date, history['high'])
-    print(high)
+    time = []
+    high = []
+
+    for one in history:
+        time.append(to_string_date(one.time))
+        high.append(one.high)
+
+    print(time)
     fig = plt.figure(1, figsize=(9, 4))
     plt.subplot(111)
-    plt.plot(history['time'], high)
+    plt.plot(time, high)
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     plt.close(fig)
