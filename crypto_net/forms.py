@@ -60,7 +60,7 @@ class HistoryByMinuteForm(forms.Form):
 
     @staticmethod
     def get_history_plot():
-        history_by_minute = HistoryByMinute.objects.order_by('-time').all()
+        history_by_minute = HistoryByMinute.get_avg_prices_with_time()
 
         def to_string_date(x):
             return datetime.utcfromtimestamp(x)
