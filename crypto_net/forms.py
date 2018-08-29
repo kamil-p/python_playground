@@ -2,7 +2,6 @@ import io
 import json
 import logging
 import time
-from datetime import datetime
 
 import matplotlib.pyplot as plt
 import requests
@@ -56,25 +55,18 @@ class HistoryByMinuteForm(forms.Form):
             last_history = HistoryByMinute.objects.latest('time')
             return last_history.time
         except HistoryByMinute.DoesNotExist:
-            return int(time.time())
+            return int(time.time()) - 504800  # minus a week
 
     @staticmethod
     def get_history_plot():
         history_by_minute = HistoryByMinute.get_avg_prices_with_time()
 
-        def to_string_date(x):
-            return datetime.utcfromtimestamp(x)
-
-        x_time = []
-        y_high = []
-
-        for minute in history_by_minute:
-            x_time.append(to_string_date(minute.time))
-            y_high.append(minute.high)
+        x_time = history_by_minute[0]
+        y_price = history_by_minute[1]
 
         fig = plt.figure(1, figsize=(9, 4))
         plt.subplot(111)
-        plt.plot(x_time, y_high)
+        plt.plot(x_time, y_price)
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         plt.close(fig)
