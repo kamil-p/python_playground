@@ -15,6 +15,6 @@ def sync_history(request):
     return HttpResponseRedirect(reverse('crypto_net:index'))
 
 
-def get_history_plot(request):
-    buf = HistoryByMinuteForm.get_history_plot()
+def get_price_history_plot(request):
+    buf = HistoryByMinuteForm.get_price_history_plot()
     return HttpResponse(buf.getvalue(), content_type='image/png')

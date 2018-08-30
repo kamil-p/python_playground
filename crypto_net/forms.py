@@ -1,7 +1,9 @@
 import io
 import json
 import logging
+import math
 import time
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 import requests
@@ -58,15 +60,29 @@ class HistoryByMinuteForm(forms.Form):
             return int(time.time()) - 504800  # minus a week
 
     @staticmethod
-    def get_history_plot():
-        history_by_minute = HistoryByMinute.get_avg_prices_with_time()
+    def get_price_history_plot():
+        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:15000]
 
-        x_time = history_by_minute[0]
-        y_price = history_by_minute[1]
+        def to_string_date(x):
+            return datetime.utcfromtimestamp(x)
+
+        x_time = []
+        y_price = []
+        y_price_diff = []
+
+        for minute in history_by_minute:
+            x_time.append(to_string_date(minute.time))
+            y_price.append((minute.high + minute.low)/2)
+            y_price_diff.append(math.fabs((minute.open - minute.close) * 5) + 500)
 
         fig = plt.figure(1, figsize=(9, 4))
         plt.subplot(111)
-        plt.plot(x_time, y_price)
+        plt.xlabel('Time')
+        plt.ylabel('Price')
+        plt.title("ETH/PLN - price history")
+        plt.plot(x_time, y_price_diff, label='(|Price diff| * 5) + 500')
+        plt.plot(x_time, y_price, 'r', label='Price AVG')
+        plt.legend()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         plt.close(fig)
