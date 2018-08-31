@@ -61,7 +61,7 @@ class HistoryByMinuteForm(forms.Form):
 
     @staticmethod
     def get_price_history_plot():
-        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:15000]
+        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:19000]
 
         def to_string_date(x):
             return datetime.utcfromtimestamp(x)
