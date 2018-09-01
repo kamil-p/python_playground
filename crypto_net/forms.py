@@ -80,7 +80,7 @@ class HistoryByMinuteForm(forms.Form):
         plt.xlabel('Time')
         plt.ylabel('Price')
         plt.title("ETH/PLN - price history")
-        plt.plot(x_time, y_price_diff, label='(|Price diff| * 5) + 500')
+        plt.plot(x_time, y_price_diff, label='|Price diff| * 5 + 500')
         plt.plot(x_time, y_price, 'r', label='Price AVG')
         plt.legend()
         buf = io.BytesIO()

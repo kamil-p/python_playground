@@ -55,7 +55,7 @@ ROOT_URLCONF = 'python_playground.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'python_playground/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +66,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "python_playground/static"),
+    'python_playground/static',
 ]
 
 WSGI_APPLICATION = 'python_playground.wsgi.application'

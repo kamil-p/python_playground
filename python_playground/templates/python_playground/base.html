@@ -1,0 +1,65 @@
+{% load static %}
+<html>
+<head>
+    <title>Django Girls blog</title>
+    <link rel="stylesheet" href="{% static 'python_playground/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/bootstrap-grid.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/bootstrap-reboot.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/sb-admin.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'python_playground/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/brands.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/regular.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/svg-with-js.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/v4-shims.min.css' %}">
+    <link rel="stylesheet" href="{% static 'python_playground/css/custom.css' %}">
+
+    <script src="{% static 'python_playground/js/jquery.min.js' %}"></script>
+    <script src="{% static 'python_playground/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'python_playground/js/bootstrap.js' %}"></script>
+    <script src="{% static 'python_playground/js/sb-admin.min.js' %}"></script>
+</head>
+<body id="page-top">
+
+<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+    <a class="navbar-brand mr-1" href="{% url 'crypto_net:index' %}">Python, django, tensorflow playground</a>
+
+    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+        <i class="fas fa-bars"></i>
+    </button>
+</nav>
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'crypto_net:index' %}">
+                <i class="fab fa-ethereum"></i>
+                <span>Crypto net</span>
+            </a>
+        </li>
+    </ul>
+
+    <div id="content-wrapper">
+
+        <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'crypto_net:index' %}">Crypto net</a>
+                </li>
+                <li class="breadcrumb-item active">Overview</li>
+            </ol>
+
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
