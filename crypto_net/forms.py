@@ -3,10 +3,12 @@ import json
 import logging
 import math
 import time
-from datetime import datetime
-
-import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
 import requests
+import matplotlib.pyplot as plt
+
+from datetime import datetime
 from django.db.utils import IntegrityError
 from django.forms import forms
 
@@ -63,9 +65,6 @@ class HistoryByMinuteForm(forms.Form):
     def get_price_history_plot():
         history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:19000]
 
-        def to_string_date(x):
-            return datetime.utcfromtimestamp(x)
-
         x_time = []
         y_price = []
         y_price_diff = []
@@ -87,6 +86,60 @@ class HistoryByMinuteForm(forms.Form):
         plt.savefig(buf, format='png')
         plt.close(fig)
         return buf
+
+    @staticmethod
+    def get_price_linear_plot():
+        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:100]
+
+        x_time = []
+        y_price = []
+        y_price_diff = []
+
+        for minute in history_by_minute:
+            y_price.append((minute.high + minute.low)/2)
+            x_time.append(float(minute.time))
+
+        m = tf.Variable(0.39)
+        b = tf.Variable(0.2)
+
+        error = 0
+
+        for x, y in zip(x_time, y_price):
+            y_hat = m*x + b  # Our predicted value
+            error += (y-y_hat)**2  # The cost we want to minimize (we'll need to use an
+                                   # optimization function for the minimization!)
+
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+        train = optimizer.minimize(error)
+
+        init = tf.global_variables_initializer()
+
+        with tf.Session() as sess:
+            sess.run(init)
+            epochs = 100
+            for i in range(epochs):
+                sess.run(train)
+
+            # Fetch Back Results
+            final_slope, final_intercept = sess.run([m, b])
+
+        y_pred_plot = final_slope * x_time + final_intercept
+
+        fig = plt.figure(1, figsize=(9, 4))
+        plt.subplot(111)
+        plt.xlabel('Time')
+        plt.ylabel('Price')
+        plt.title("ETH/PLN - price history")
+        plt.plot(x_time, y_pred_plot, 'r', label='Price AVG')
+        plt.legend()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close(fig)
+        return buf
+
+
+def to_string_date(x):
+    return datetime.utcfromtimestamp(x)
 
 
 class SyncHistoryCounter:
