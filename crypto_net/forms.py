@@ -89,15 +89,15 @@ class HistoryByMinuteForm(forms.Form):
 
     @staticmethod
     def get_price_linear_plot():
-        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:100]
+        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:10]
 
-        x_time = []
-        y_price = []
+        x_time = np.array([], dtype=np.float64)
+        y_price = np.array([], dtype=np.float64)
         y_price_diff = []
 
         for minute in history_by_minute:
-            y_price.append((minute.high + minute.low)/2)
-            x_time.append(float(minute.time))
+            x_time = np.append(x_time, minute.time)
+            y_price = np.append(y_price, (minute.high + minute.low)/2)
 
         m = tf.Variable(0.39)
         b = tf.Variable(0.2)
@@ -105,8 +105,8 @@ class HistoryByMinuteForm(forms.Form):
         y_label = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
         error = 0
-
-        for x, y in zip(x_data, y_label):
+        np.array(x_time, dtype=np.float64);
+        for x, y in zip(x_time, y_price):
             y_hat = m * x + b  # Our predicted value
             error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
                                    # optimization function for the minimization!)
@@ -127,14 +127,17 @@ class HistoryByMinuteForm(forms.Form):
 
         print(final_slope)
         print(final_intercept)
-        y_pred_plot = final_slope * x_time + final_intercept
+
+        x_test = np.linspace(-1,11,10)
+
+        y_pred_plot = final_slope * x_test + final_intercept
 
         fig = plt.figure(1, figsize=(9, 4))
         plt.subplot(111)
         plt.xlabel('Time')
         plt.ylabel('Price')
         plt.title("ETH/PLN - price history")
-        plt.plot(x_time, y_pred_plot, 'r', label='Price AVG')
+        plt.plot(x_test, y_pred_plot, 'r', label='Price AVG')
         plt.legend()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
