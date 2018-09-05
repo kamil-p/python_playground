@@ -89,7 +89,7 @@ class HistoryByMinuteForm(forms.Form):
 
     @staticmethod
     def get_price_linear_plot():
-        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:10]
+        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:100:10]
 
         x_time = np.array([], dtype=np.float64)
         y_price = np.array([], dtype=np.float64)
@@ -101,8 +101,8 @@ class HistoryByMinuteForm(forms.Form):
 
         m = tf.Variable(0.39)
         b = tf.Variable(0.2)
-        x_data = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
-        y_label = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        #  x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        #  y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
         error = 0
         np.array(x_time, dtype=np.float64);
@@ -111,7 +111,7 @@ class HistoryByMinuteForm(forms.Form):
             error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
                                    # optimization function for the minimization!)
 
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.0001)
         train = optimizer.minimize(error)
 
         init = tf.global_variables_initializer()
@@ -121,14 +121,16 @@ class HistoryByMinuteForm(forms.Form):
             epochs = 100
             for i in range(epochs):
                 sess.run(train)
+                # print("Iteration %d m: %s b: %s" % (i, m, b))
 
-            # Fetch Back Results
+
+            #  Fetch Back Results
             final_slope, final_intercept = sess.run([m, b])
 
         print(final_slope)
         print(final_intercept)
 
-        x_test = np.linspace(-1,11,10)
+        x_test = x_time
 
         y_pred_plot = final_slope * x_test + final_intercept
 
@@ -137,7 +139,8 @@ class HistoryByMinuteForm(forms.Form):
         plt.xlabel('Time')
         plt.ylabel('Price')
         plt.title("ETH/PLN - price history")
-        plt.plot(x_test, y_pred_plot, 'r', label='Price AVG')
+        plt.plot(y_pred_plot, y_price, 'r', label='Prediction')
+        plt.plot(x_time, y_price, '*', label='Price AVG')
         plt.legend()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
