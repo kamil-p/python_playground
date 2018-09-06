@@ -101,15 +101,15 @@ class HistoryByMinuteForm(forms.Form):
 
         m = tf.Variable(0.39)
         b = tf.Variable(0.2)
-        #  x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
-        #  y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
         error = 0
         np.array(x_time, dtype=np.float64);
         for x, y in zip(x_time, y_price):
             y_hat = m * x + b  # Our predicted value
             error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
-                                   # optimization function for the minimization!)
+            print(error)                       # optimization function for the minimization!)
 
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.0001)
         train = optimizer.minimize(error)
@@ -121,7 +121,7 @@ class HistoryByMinuteForm(forms.Form):
             epochs = 100
             for i in range(epochs):
                 sess.run(train)
-                # print("Iteration %d m: %s b: %s" % (i, m, b))
+                print("Iteration %d m: %s b: %s" % (i, m, b))
 
 
             #  Fetch Back Results
