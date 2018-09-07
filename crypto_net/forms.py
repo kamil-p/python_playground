@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from django.db.utils import IntegrityError
 from django.forms import forms
+from tensorflow.python import debug as tf_debug
 
 from .models import HistoryByMinute
 
@@ -115,8 +116,9 @@ class HistoryByMinuteForm(forms.Form):
         train = optimizer.minimize(error)
 
         init = tf.global_variables_initializer()
-
-        with tf.Session() as sess:
+        session = tf.Session();
+        session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:7000")
+        with session as sess:
             sess.run(init)
             epochs = 100
             for i in range(epochs):
