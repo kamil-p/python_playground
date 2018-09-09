@@ -96,17 +96,20 @@ class HistoryByMinuteForm(forms.Form):
         y_price = np.array([], dtype=np.float64)
         y_price_diff = []
 
-        for minute in history_by_minute:
-            x_time = np.append(x_time, minute.time)
-            y_price = np.append(y_price, (minute.high + minute.low)/2)
+        x_time = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
+        y_price = np.array([1500, 1550, 1600, 1575, 1625, 1600, 1700, 1715, 1700, 1750], dtype=np.float64)
+
+        # for minute in history_by_minute:
+        #     x_time = np.append(x_time, minute.time)
+        #     y_price = np.append(y_price, (minute.high + minute.low)/2)
 
         m = tf.Variable(0.39)
         b = tf.Variable(0.2)
-        x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
-        y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        # x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
+        # y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
         error = 0
-        np.array(x_time, dtype=np.float64);
+        np.array(x_time, dtype=np.float64)
         for x, y in zip(x_time, y_price):
             y_hat = m * x + b  # Our predicted value
             error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
@@ -116,8 +119,8 @@ class HistoryByMinuteForm(forms.Form):
         train = optimizer.minimize(error)
 
         init = tf.global_variables_initializer()
-        session = tf.Session();
-        session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:7000")
+        session = tf.Session()
+        # session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:7000")
         with session as sess:
             sess.run(init)
             epochs = 100
