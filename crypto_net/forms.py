@@ -97,30 +97,54 @@ class HistoryByMinuteForm(forms.Form):
         y_price_diff = []
 
         x_time = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
-        y_price = np.array([1500, 1550, 1600, 1575, 1625, 1600, 1700, 1715, 1700, 1750], dtype=np.float64)
+        y_price = np.array([1000, 1150, 1200, 1375, 1425, 1500, 1700, 1715, 1800, 1900], dtype=np.float64)
 
         # for minute in history_by_minute:
         #     x_time = np.append(x_time, minute.time)
         #     y_price = np.append(y_price, (minute.high + minute.low)/2)
 
-        m = tf.Variable(0.39)
-        b = tf.Variable(0.2)
         # x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
         # y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
+        fig = plt.figure(1, figsize=(9, 4))
+        plt.subplot(111)
+        plt.xlabel('Time')
+        plt.ylabel('Price')
+        plt.title("ETH/PLN - price history")
+        plt.plot(x_time, y_price, '*', label='Price AVG')
+
+        learning_rates = [
+            {"rate": 0.000001, "plot": "--r"},
+            {"rate": 0.00001, "plot": "--g"},
+            {"rate": 0.0001, "plot": "--y"},
+            {"rate": 0.001,  "plot": "--o"},
+            {"rate": 0.0025,  "plot": "--p"},
+        ]
+
+        for learning_rate in learning_rates:
+            HistoryByMinuteForm.add_linear_plot(x_time, y_price, learning_rate)
+        plt.legend()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close(fig)
+        return buf
+
+    @staticmethod
+    def add_linear_plot(x_time, y_price, learning_rate):
         error = 0
         np.array(x_time, dtype=np.float64)
+
+        m = tf.Variable(0.39)
+        b = tf.Variable(0.2)
+
         for x, y in zip(x_time, y_price):
             y_hat = m * x + b  # Our predicted value
             error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
-            print(error)                       # optimization function for the minimization!)
-
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.0001)
+            print(error)  # optimization function for the minimization!)
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate["rate"])
         train = optimizer.minimize(error)
-
         init = tf.global_variables_initializer()
         session = tf.Session()
-        # session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:7000")
         with session as sess:
             sess.run(init)
             epochs = 100
@@ -128,29 +152,13 @@ class HistoryByMinuteForm(forms.Form):
                 sess.run(train)
                 print("Iteration %d m: %s b: %s" % (i, m, b))
 
-
             #  Fetch Back Results
             final_slope, final_intercept = sess.run([m, b])
-
         print(final_slope)
         print(final_intercept)
-
         x_test = x_time
-
         y_pred_plot = final_slope * x_test + final_intercept
-
-        fig = plt.figure(1, figsize=(9, 4))
-        plt.subplot(111)
-        plt.xlabel('Time')
-        plt.ylabel('Price')
-        plt.title("ETH/PLN - price history")
-        plt.plot(y_pred_plot, y_price, 'r', label='Prediction')
-        plt.plot(x_time, y_price, '*', label='Price AVG')
-        plt.legend()
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        plt.close(fig)
-        return buf
+        plt.plot(x_time, y_pred_plot, learning_rate["plot"], label='Learning rate {}'.format(learning_rate["rate"]))
 
 
 def to_string_date(x):
