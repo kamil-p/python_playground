@@ -89,22 +89,9 @@ class HistoryByMinuteForm(forms.Form):
         return buf
 
     @staticmethod
-    def get_price_linear_plot():
-        history_by_minute = HistoryByMinute.objects.order_by('-time').all()[:100:10]
-
-        x_time = np.array([], dtype=np.float64)
-        y_price = np.array([], dtype=np.float64)
-        y_price_diff = []
-
+    def get_price_linear_regression_plot():
         x_time = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
         y_price = np.array([1000, 1150, 1200, 1375, 1425, 1500, 1700, 1715, 1800, 1900], dtype=np.float64)
-
-        # for minute in history_by_minute:
-        #     x_time = np.append(x_time, minute.time)
-        #     y_price = np.append(y_price, (minute.high + minute.low)/2)
-
-        # x_time = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
-        # y_price = np.linspace(0,10,10) + np.random.uniform(-1.5,1.5,10)
 
         fig = plt.figure(1, figsize=(9, 4))
         plt.subplot(111)
@@ -117,8 +104,8 @@ class HistoryByMinuteForm(forms.Form):
             {"rate": 0.000001, "plot": "--r"},
             {"rate": 0.00001, "plot": "--g"},
             {"rate": 0.0001, "plot": "--y"},
-            {"rate": 0.001,  "plot": "--o"},
-            {"rate": 0.0025,  "plot": "--p"},
+            {"rate": 0.001, "plot": "--o"},
+            {"rate": 0.0025, "plot": "--p"},
         ]
 
         for learning_rate in learning_rates:
@@ -138,26 +125,21 @@ class HistoryByMinuteForm(forms.Form):
         b = tf.Variable(0.2)
 
         for x, y in zip(x_time, y_price):
-            y_hat = m * x + b  # Our predicted value
-            error += (y - y_hat) ** 2  # The cost we want to minimize (we'll need to use an
-            print(error)  # optimization function for the minimization!)
+            y_hat = m * x + b
+            error += (y - y_hat) ** 2
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate["rate"])
         train = optimizer.minimize(error)
         init = tf.global_variables_initializer()
         session = tf.Session()
+
         with session as sess:
             sess.run(init)
             epochs = 100
             for i in range(epochs):
                 sess.run(train)
-                print("Iteration %d m: %s b: %s" % (i, m, b))
-
-            #  Fetch Back Results
             final_slope, final_intercept = sess.run([m, b])
-        print(final_slope)
-        print(final_intercept)
-        x_test = x_time
-        y_pred_plot = final_slope * x_test + final_intercept
+
+        y_pred_plot = final_slope * x_time + final_intercept
         plt.plot(x_time, y_pred_plot, learning_rate["plot"], label='Learning rate {}'.format(learning_rate["rate"]))
 
 
