@@ -1,0 +1,9 @@
+{% extends 'neural_network/templates/base/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <img src="{% url 'neural_network:get_price_linear_plot' %}" alt="Linear regression by learning rate">
+        </div>
+    </div>
+{% endblock %}

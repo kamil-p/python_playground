@@ -42,19 +42,17 @@
                 <span>Crypto net</span>
             </a>
         </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'neural_network:index' %}">
+                <i class="fas fa-sitemap"></i>
+                <span>Neural network</span>
+            </a>
+        </li>
     </ul>
 
     <div id="content-wrapper">
 
         <div class="container-fluid">
-            <!-- Breadcrumbs-->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{% url 'crypto_net:index' %}">Crypto net</a>
-                </li>
-                <li class="breadcrumb-item active">Overview</li>
-            </ol>
-
             {% block content %}
             {% endblock %}
         </div>

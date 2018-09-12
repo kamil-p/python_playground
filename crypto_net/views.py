@@ -18,8 +18,3 @@ def sync_history(request):
 def get_price_history_plot(request):
     buf = HistoryByMinuteForm.get_price_history_plot()
     return HttpResponse(buf.getvalue(), content_type='image/png')
-
-
-def get_price_linear_plot(request):
-    buf = HistoryByMinuteForm.get_price_linear_regression_plot()
-    return HttpResponse(buf.getvalue(), content_type='image/png')

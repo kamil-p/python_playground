@@ -18,5 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('crypto_net/', include('crypto_net.urls')),
+    path('neural_network/', include('neural_network.urls')),
     path('admin/', admin.site.urls),
 ]
