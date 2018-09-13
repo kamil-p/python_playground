@@ -9,3 +9,6 @@ The idea is to take the historical data put it to neural net and see how the dat
 App dashboard page:
 
 ![Crypto net view](doc/crypto_net_sample.PNG?raw=true)
+
+
+![Neural_network view](doc/neural_network_regression.PNG?raw=true)
