@@ -1,12 +1,9 @@
 import io
-import json
 import logging
-import math
-import time
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
-
 from django.forms import forms
 
 logger = logging.getLogger('django')
