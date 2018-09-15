@@ -3,15 +3,12 @@ import json
 import logging
 import math
 import time
-import numpy as np
-import tensorflow as tf
-import requests
-import matplotlib.pyplot as plt
-
 from datetime import datetime
+
+import matplotlib.pyplot as plt
+import requests
 from django.db.utils import IntegrityError
 from django.forms import forms
-from tensorflow.python import debug as tf_debug
 
 from .models import HistoryByMinute
 
