@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from django.forms import forms
+from tensorflow.python import debug as tf_debug
 
 logger = logging.getLogger('django')
 
@@ -54,7 +55,7 @@ class NeuralNetworkForm(forms.Form):
         train = optimizer.minimize(error)
         init = tf.global_variables_initializer()
         session = tf.Session()
-
+        session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:3003")
         with session as sess:
             sess.run(init)
             epochs = 100
