@@ -66,4 +66,7 @@ class NeuralNetworkForm(forms.Form):
         y_pred_plot = final_slope * x_time + final_intercept
         plt.plot(x_time, y_pred_plot, learning_rate["plot"], label='Learning rate {}'.format(learning_rate["rate"]))
 
+    @staticmethod
+    def tf_estimator():
+        pass
 
