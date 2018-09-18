@@ -68,5 +68,13 @@ class NeuralNetworkForm(forms.Form):
 
     @staticmethod
     def tf_estimator():
-        pass
+        # 1 Million Points
+        x_data = np.linspace(0.0,10.0,1000000)
+
+        noise = np.random.randn(len(x_data))
+
+        # y = mx + b + noise_levels
+        b = 5
+
+        y_true =  (0.5 * x_data ) + 5 + noise
 
