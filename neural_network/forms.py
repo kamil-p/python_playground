@@ -3,6 +3,7 @@ import logging
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from django.forms import forms
 from tensorflow.python import debug as tf_debug
@@ -78,3 +79,4 @@ class NeuralNetworkForm(forms.Form):
 
         y_true =  (0.5 * x_data ) + 5 + noise
 
+        my_data = pd.concat([pd.DataFrame(data=x_data,columns=['X Data']),pd.DataFrame(data=y_true,columns=['Y'])],axis=1)
