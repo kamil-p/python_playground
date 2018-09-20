@@ -80,3 +80,5 @@ class NeuralNetworkForm(forms.Form):
         y_true =  (0.5 * x_data ) + 5 + noise
 
         my_data = pd.concat([pd.DataFrame(data=x_data,columns=['X Data']),pd.DataFrame(data=y_true,columns=['Y'])],axis=1)
+
+        my_data.sample(n=250).plot(kind='scatter',x='X Data',y='Y')
