@@ -87,3 +87,6 @@ class NeuralNetworkForm(forms.Form):
 
         m = tf.Variable(0.5)
         b = tf.Variable(1.0)
+
+        xph = tf.placeholder(tf.float32,[batch_size])
+        yph = tf.placeholder(tf.float32,[batch_size])
