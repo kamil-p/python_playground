@@ -90,3 +90,7 @@ class NeuralNetworkForm(forms.Form):
 
         xph = tf.placeholder(tf.float32,[batch_size])
         yph = tf.placeholder(tf.float32,[batch_size])
+
+        y_model = m*xph + b
+
+        error = tf.reduce_sum(tf.square(yph-y_model))
