@@ -94,3 +94,6 @@ class NeuralNetworkForm(forms.Form):
         y_model = m*xph + b
 
         error = tf.reduce_sum(tf.square(yph-y_model))
+
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+        train = optimizer.minimize(error)
