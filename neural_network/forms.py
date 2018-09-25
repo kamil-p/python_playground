@@ -97,3 +97,5 @@ class NeuralNetworkForm(forms.Form):
 
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
         train = optimizer.minimize(error)
+
+        init = tf.global_variables_initializer()
