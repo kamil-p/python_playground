@@ -34,7 +34,7 @@ class NeuralNetworkForm(forms.Form):
         ]
 
         for learning_rate in learning_rates:
-            NeuralNetworkForm.add_linear_plot(x_time, y_price, learning_rate)
+            NeuralNetworkForm.__add_linear_plot(x_time, y_price, learning_rate)
         plt.legend()
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
@@ -42,7 +42,7 @@ class NeuralNetworkForm(forms.Form):
         return buf
 
     @staticmethod
-    def add_linear_plot(x_time, y_price, learning_rate):
+    def __add_linear_plot(x_time, y_price, learning_rate):
         error = 0
         np.array(x_time, dtype=np.float64)
 

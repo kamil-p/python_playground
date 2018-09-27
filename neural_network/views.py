@@ -11,3 +11,8 @@ class IndexView(generic.TemplateView):
 def get_price_linear_plot(request):
     buf = NeuralNetworkForm.get_price_linear_regression_plot()
     return HttpResponse(buf.getvalue(), content_type='image/png')
+
+
+def tf_estimator(request):
+    NeuralNetworkForm.tf_estimator()
+    return HttpResponse()
