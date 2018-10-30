@@ -25,7 +25,9 @@ SECRET_KEY = 'k!xz_ajv))z1dyfmz(sd!rz(7x!sxsikk7-$*ur12bu!19g^hz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.56.101',
+]
 
 # Application definition
 

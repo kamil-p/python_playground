@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 django = "*"
 python-dateutil = "*"
+numpy = "*"
+matplotlib = "*"
+requests = "*"
+pandas = "*"
+tensorflow = "*"
+"psycopg2-binary" = "*"
 
 [dev-packages]
 
