@@ -56,7 +56,7 @@ class NeuralNetworkForm(forms.Form):
         train = optimizer.minimize(error)
         init = tf.global_variables_initializer()
         session = tf.Session()
-        session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:3003")
+        # session = tf_debug.TensorBoardDebugWrapperSession(session, "Kamil:3003")
         with session as sess:
             sess.run(init)
             epochs = 100
@@ -68,10 +68,9 @@ class NeuralNetworkForm(forms.Form):
         plt.plot(x_time, y_pred_plot, learning_rate["plot"], label='Learning rate {}'.format(learning_rate["rate"]))
 
     @staticmethod
-    def tf_estimator():
+    def get_regression_for_million_samples_example():
         # 1 Million Points
         x_data = np.linspace(0.0, 10.0, 1000000)
-
         noise = np.random.randn(len(x_data))
 
         # y = mx + b + noise_levels
@@ -79,10 +78,9 @@ class NeuralNetworkForm(forms.Form):
 
         y_true = (0.5 * x_data) + 5 + noise
 
-        my_data = pd.concat([pd.DataFrame(data=x_data, columns=['X Data']), pd.DataFrame(data=y_true, columns=['Y'])],
+        my_data = pd.concat([pd.DataFrame(data=x_data, columns=['X Data']),
+                             pd.DataFrame(data=y_true, columns=['Y'])],
                             axis=1)
-
-        my_data.sample(n=250).plot(kind='scatter', x='X Data', y='Y')
 
         batch_size = 8
 
@@ -94,9 +92,8 @@ class NeuralNetworkForm(forms.Form):
 
         y_model = m * xph + b
 
-        error = tf.reduce_sum(tf.square(yph - y_model))
-
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+        error = tf.reduce_sum(tf.square(yph - y_model))
         train = optimizer.minimize(error)
 
         init = tf.global_variables_initializer()
@@ -109,3 +106,21 @@ class NeuralNetworkForm(forms.Form):
                 feed = {xph: x_data[rand_ind], yph: y_true[rand_ind]}
                 sess.run(train, feed_dict=feed)
             model_m, model_b = sess.run([m, b])
+
+        y_hat = x_data * model_m + model_b
+
+        fig = plt.figure(1, figsize=(9, 4))
+        plt.subplot(111)
+        plt.xlabel('X Data')
+        plt.ylabel('Y Data')
+        plt.title("Linear regression from million points")
+        data = my_data.sample(n=250)
+
+        plt.plot(x_data, y_hat, 'r')
+        plt.plot(data['X Data'], data['Y'], '*')
+
+        plt.legend()
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close(fig)
+        return buf

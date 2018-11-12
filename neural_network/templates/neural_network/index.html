@@ -1,9 +1,41 @@
 {% extends 'neural_network/templates/base/base.html' %}
 
 {% block content %}
+
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
-            <img src="{% url 'neural_network:get_price_linear_plot' %}" alt="Linear regression by learning rate">
+            <div class="card text-white bg-primary o-hidden h-100 box-h-100">
+                <div class="card-body">
+                    <div class="card-body-icon">
+                        <i class="fas fa-fw fa-list"></i>
+                    </div>
+                    <div class="mr-5">Regression by learning rate</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" target="_blank" href="{% url 'neural_network:get_price_linear_plot' %}">
+                    <span class="float-left">Show</span>
+                    <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+            </div>
+        </div>
+
+
+        <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card text-white bg-primary o-hidden h-100 box-h-100">
+                <div class="card-body">
+                    <div class="card-body-icon">
+                        <i class="fas fa-fw fa-list"></i>
+                    </div>
+                    <div class="mr-5">Regression for million samples example</div>
+                </div>
+                <a class="card-footer text-white clearfix small z-1" target="_blank" href="{% url 'neural_network:regression_for_million_samples_example' %}">
+                    <span class="float-left">Show</span>
+                    <span class="float-right">
+                    <i class="fas fa-angle-right"></i>
+                  </span>
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -13,6 +13,6 @@ def get_price_linear_plot(request):
     return HttpResponse(buf.getvalue(), content_type='image/png')
 
 
-def tf_estimator(request):
-    NeuralNetworkForm.tf_estimator()
-    return HttpResponse()
+def regression_for_million_samples_example(request):
+    buf = NeuralNetworkForm.get_regression_for_million_samples_example()
+    return HttpResponse(buf.getvalue(), content_type='image/png')
